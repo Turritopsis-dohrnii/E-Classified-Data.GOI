@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center_horizontal"
+    android:padding="5dp"
+    tools:context=".ListAdapter">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/text_bid_amount"
+                android:layout_marginTop="15dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bid Amount:"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+
+            <TextView
+                android:id="@+id/text_auction_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="Auction ID:"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+
+            <TextView
+                android:id="@+id/text_bidder_id"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="Bidder ID:"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+            <TextView
+                android:id="@+id/text_enterprise_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="Enterprise name:"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+
+            <TextView
+                android:id="@+id/text_sam_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="SAM Status:"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+
+            <TextView
+                android:id="@+id/text_duns_number"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="DUNS Number:"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+
+            <TextView
+                android:id="@+id/text_creation_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="Creation Date:"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+
+            <TextView
+                android:id="@+id/text_updation_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:text="Updation Date:"
+                android:textStyle="bold"
+                android:background="#989EE7CC"/>
+
+        </TableRow>
+
+
+    </TableLayout>
+
+</LinearLayout>

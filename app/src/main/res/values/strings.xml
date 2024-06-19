@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">Railway Bidding Data -GOI</string>
+    <string name="web_client_id">598705442161-1sdjrt8j925j8e5d1het43lmq7fefm7e.apps.googleusercontent.com</string>
+    <string-array name="status">
+        <item>Verified</item>
+        <item>On Hold</item>
+        <item>Unverified</item>
+    </string-array>
+</resources>
