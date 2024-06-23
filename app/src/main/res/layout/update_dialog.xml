@@ -13,7 +13,6 @@
         android:padding="5dp">
 
         <TableRow>
-
             <TextView
                 android:layout_marginTop="15dp"
                 android:layout_width="wrap_content"
@@ -33,7 +32,6 @@
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,13 +49,11 @@
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="Bidder ID:"
-
                 android:textStyle="bold" />
 
             <EditText
@@ -70,13 +66,11 @@
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="Enterprise name:"
-
                 android:textStyle="bold" />
 
             <EditText
@@ -89,25 +83,22 @@
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="SAM Status:"
                 android:textStyle="bold" />
+
             <Spinner
                 android:id="@+id/verification_status2"
                 android:layout_width="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
-
                 android:entries="@array/status" />
-
         </TableRow>
 
         <TableRow>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -132,56 +123,32 @@
                 android:text="Creation Date:"
                 android:textStyle="bold" />
 
-            <EditText
+            <TextView
                 android:id="@+id/creationDate2"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:hint="Date"
-                android:focusable="false"
-                android:onClick="showDatePickerDialog"
+                android:text="Select Date"
                 android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/cd2"
-                android:text="SELECT DATE"
-                android:layout_width="wrap_content"
-
-                />
-
         </TableRow>
 
-
         <TableRow>
-
             <TextView
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="Updation Date:"
                 android:textStyle="bold" />
 
-            <EditText
+            <TextView
                 android:id="@+id/updationDate2"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:hint="Date"
-                android:focusable="false"
-                android:onClick="showDatePickerDialog"
+                android:text="Select Date"
                 android:layout_height="wrap_content" />
-            <Button
-                android:id="@+id/ud2"
-                android:text="SELECT DATE"
-                android:layout_width="wrap_content"
-
-                />
-
         </TableRow>
-
     </TableLayout>
 
     <Button
-
         android:id="@+id/btnUpdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

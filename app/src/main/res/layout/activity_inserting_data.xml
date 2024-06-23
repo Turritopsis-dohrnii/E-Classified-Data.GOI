@@ -95,13 +95,14 @@
                 android:textStyle="bold" />
 
             <EditText
-                android:layout_marginTop="15dp"
-                android:hint="Number"
-                android:layout_marginLeft="10dp"
-                android:textAlignment="center"
                 android:id="@+id/bidAmount"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="15dp"
+                android:hint="Number"
+                android:minHeight="48dp"
+                android:textAlignment="center" />
         </TableRow>
 
 
@@ -161,24 +162,14 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"
                 android:focusable="false"
-                android:hint="Date"
-                android:onClick="showDatePickerDialog" />
+                android:hint="Date" />
 
-            <Button
-                android:id="@+id/cd"
-                android:text="SELECT DATE"
-                android:layout_width="wrap_content"
-                android:onClick="insert_button"
-                />
 
         </TableRow>
 
-
         <TableRow>
-
             <TextView
                 android:layout_width="wrap_content"
-
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="Updation Date:"
@@ -190,17 +181,11 @@
                 android:layout_marginLeft="10dp"
                 android:hint="Date"
                 android:layout_marginTop="10dp"
-                android:focusable="false"
-                android:onClick="showDatePickerDialog"
-                android:layout_height="wrap_content" />
-            <Button
-                android:id="@+id/ud"
-                android:text="SELECT DATE"
-                android:layout_width="wrap_content"
-                android:onClick="update_button"
-                />
+                android:focusable="false" />
+
 
         </TableRow>
+
 
     </TableLayout>
 

@@ -1,6 +1,7 @@
 package com.example.railwaybiddingdata_goi;
 
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -14,9 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,59 +50,64 @@ public class RetreiveDataActivity extends InsertingDataActivity {
 
         myListview = findViewById(R.id.myListView);
         bidList = new ArrayList<>();
-        railwayDbRef = FirebaseDatabase.getInstance().getReference("Railways");
+        // Get current authenticated user
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            railwayDbRef = FirebaseDatabase.getInstance().getReference("Railways").child(userId);
 
-        railwayDbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                bidList.clear();
+            railwayDbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    bidList.clear();
 
-                for (DataSnapshot railwayDatasnap : dataSnapshot.getChildren()) {
-                    Railway bidders = railwayDatasnap.getValue(Railway.class);
-                    String id = bidders != null ? bidders.id : null;
+                    for (DataSnapshot railwayDatasnap : dataSnapshot.getChildren()) {
+                        Railway bidders = railwayDatasnap.getValue(Railway.class);
+                        String id = bidders != null ? bidders.id : null;
 
-                    if (id != null) {
-                        byte[] key = keyDatabaseHelper.getKey(id);
-                        if (key != null) {
-                            // Decrypt encrypted fields retrieved from Firebase
-                            try {
-                                if (bidders != null) {
-                                    bidders.bidAmount = SecurityKyber.decrypt(bidders.bidAmount, key);
-                                    bidders.auctionId = SecurityKyber.decrypt(bidders.auctionId, key);
-                                    bidders.bidderId = SecurityKyber.decrypt(bidders.bidderId, key);
-                                    bidders.enterpriseName = SecurityKyber.decrypt(bidders.enterpriseName, key);
-                                    bidders.samStatus = SecurityKyber.decrypt(bidders.samStatus, key);
-                                    bidders.dunsNumber = SecurityKyber.decrypt(bidders.dunsNumber, key);
-                                    bidders.creationDate = SecurityKyber.decrypt(bidders.creationDate, key);
-                                    bidders.updationDate = SecurityKyber.decrypt(bidders.updationDate, key);
+                        if (id != null) {
+                            byte[] key = keyDatabaseHelper.getKey(id);
+                            if (key != null) {
+                                // Decrypt encrypted fields retrieved from Firebase
+                                try {
+                                    if (bidders != null) {
+                                        bidders.bidAmount = SecurityKyber.decrypt(bidders.bidAmount, key);
+                                        bidders.auctionId = SecurityKyber.decrypt(bidders.auctionId, key);
+                                        bidders.bidderId = SecurityKyber.decrypt(bidders.bidderId, key);
+                                        bidders.enterpriseName = SecurityKyber.decrypt(bidders.enterpriseName, key);
+                                        bidders.samStatus = SecurityKyber.decrypt(bidders.samStatus, key);
+                                        bidders.dunsNumber = SecurityKyber.decrypt(bidders.dunsNumber, key);
+                                        bidders.creationDate = SecurityKyber.decrypt(bidders.creationDate, key);
+                                        bidders.updationDate = SecurityKyber.decrypt(bidders.updationDate, key);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace(); // Print the stack trace to debug any decryption errors
+                                    // Handle the decryption error here, if necessary
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace(); // Print the stack trace to debug any decryption errors
-                                // Handle the decryption error here, if necessary
                             }
                         }
+
+                        bidList.add(bidders);
                     }
 
-                    bidList.add(bidders);
+                    ListAdapter adapter = new ListAdapter(RetreiveDataActivity.this, bidList);
+                    myListview.setAdapter(adapter);
                 }
 
-                ListAdapter adapter = new ListAdapter(RetreiveDataActivity.this, bidList);
-                myListview.setAdapter(adapter);
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // Handle onCancelled event if needed
+                }
+            });
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // Handle onCancelled event if needed
-            }
-        });
+            // Set itemLongClickListener on listview item
+            myListview.setOnItemLongClickListener((parent, view, position, id) -> {
+                Railway bidders = bidList.get(position);
+                showUpdateDialog(bidders.id, bidders.enterpriseName);
 
-        // Set itemLongClickListener on listview item
-        myListview.setOnItemLongClickListener((parent, view, position, id) -> {
-            Railway bidders = bidList.get(position);
-            showUpdateDialog(bidders.id, bidders.enterpriseName);
-
-            return false;
-        });
+                return false;
+            });
+        }
     }
 
     private void showUpdateDialog(final String id, String name) {
@@ -125,10 +129,7 @@ public class RetreiveDataActivity extends InsertingDataActivity {
         Button btnUpdate = mDialogView.findViewById(R.id.btnUpdate);
         Button btnDelete = mDialogView.findViewById(R.id.btnDelete);
 
-        Button create_date = mDialogView.findViewById(R.id.cd2);
-        Button update_date = mDialogView.findViewById(R.id.ud2);
-
-        create_date.setOnClickListener(v -> {
+        creationDate.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
@@ -142,7 +143,7 @@ public class RetreiveDataActivity extends InsertingDataActivity {
             datePickerDialog.show();
         });
 
-        update_date.setOnClickListener(v -> {
+        updationDate.setOnClickListener(v -> {
             final Calendar c = Calendar.getInstance();
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
@@ -205,18 +206,27 @@ public class RetreiveDataActivity extends InsertingDataActivity {
     }
 
     private void deleteRecord(String id) {
-        // Create reference to database
-        DatabaseReference railwayDbRef = FirebaseDatabase.getInstance().getReference("Railways").child(id);
-        // We are referencing child here because we will be deleting one record, not the whole data in the database
-        Task<Void> mTask = railwayDbRef.removeValue();
-        mTask.addOnSuccessListener(aVoid -> showToast("Deleted"))
-                .addOnFailureListener(e -> showToast("Error deleting record"));
+        // Get current authenticated user
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            // Create reference to database
+            DatabaseReference railwayDbRef = FirebaseDatabase.getInstance().getReference("Railways").child(userId).child(id);
+            // We are referencing the data with the record id
+            Task<Void> mTask = railwayDbRef.removeValue();
+            mTask.addOnSuccessListener(aVoid -> showToast("Record Deleted"));
+        }
     }
 
-    private void updateData(String id, String bidAmount, String auctionId, String bidderId, String enterpriseName, String samStatus, String dunsNumber, String creationDate, String updationDate) {
-        // Creating database reference
-        DatabaseReference railwayDbRef = FirebaseDatabase.getInstance().getReference("Railways").child(id);
-        Railway bidders = new Railway(id, bidAmount, auctionId, bidderId, enterpriseName, samStatus, dunsNumber, creationDate, updationDate);
-        railwayDbRef.setValue(bidders);
+    private void updateData(String id, String bamt, String aucId, String bidId, String eName, String stat, String dNum, String cdate, String udate) {
+        // Get current authenticated user
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userId = user.getUid();
+            DatabaseReference railwayDbRef = FirebaseDatabase.getInstance().getReference("Railways").child(userId).child(id);
+
+            Railway bidders = new Railway(id, bamt, aucId, bidId, eName, stat, dNum, cdate, udate);
+            railwayDbRef.setValue(bidders);
+        }
     }
 }

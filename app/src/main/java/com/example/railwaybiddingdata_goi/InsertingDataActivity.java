@@ -1,6 +1,7 @@
 package com.example.railwaybiddingdata_goi;
 
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -69,7 +70,9 @@ public class InsertingDataActivity extends AppCompatActivity {
         insert = findViewById(R.id.btnInsert);
         railwayDbRef = FirebaseDatabase.getInstance().getReference("Railways");
         keyDatabaseHelper = new KeyDatabaseHelper(this);
-
+        // Set up the onClickListeners for the TextView elements
+        creationDate.setOnClickListener(view -> showDatePickerDialog(creationDate));
+        updationDate.setOnClickListener(view -> showDatePickerDialog(updationDate));
         try {
             // Generate key pair
             Security.addProvider(new BouncyCastleProvider());
@@ -89,42 +92,32 @@ public class InsertingDataActivity extends AppCompatActivity {
 
 
     }
-    public void insert_button(View view) {
+    private void showDatePickerDialog(TextView dateTextView) {
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (datePickerView, year, month, dayOfMonth) -> {
-                    creationDate.setText(dayOfMonth + "-" + (month + 1) + "-" + year);
-                    cdate = dayOfMonth + "-" + (month + 1) + "-" + year;
-                }, mYear, mMonth, mDay);
+                (datePickerView, selectedYear, selectedMonth, selectedDay) -> {
+                    String date = selectedDay + "-" + (selectedMonth + 1) + "-" + selectedYear;
+                    dateTextView.setText(date);
+                    if (dateTextView.getId() == R.id.creationDate) {
+                        cdate = date;
+                    } else if (dateTextView.getId() == R.id.updationDate) {
+                        udate = date;
+                    }
+                }, year, month, day);
         datePickerDialog.show();
     }
-
-    public void update_button(View view) {
-        final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (datePickerView, year, month, dayOfMonth) -> {
-                    updationDate.setText(dayOfMonth + "-" + (month + 1) + "-" + year);
-                    udate = dayOfMonth + "-" + (month + 1) + "-" + year;
-                }, mYear, mMonth, mDay);
-        datePickerDialog.show();
-    }
-
     public void insertData (View view)
     {
         insertRailwayData(cdate, udate);
     }
 
     private void insertRailwayData(String cdate, String udate) {
-
-
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = user.getUid();
         // Get values from EditText and Spinner fields
         String bidAmt = bidAmount.getText().toString().trim();
         String aucId = auctionId.getText().toString().trim();
@@ -135,8 +128,8 @@ public class InsertingDataActivity extends AppCompatActivity {
 
         try {
             key = ob1.encapsulation.getEncoded();
-            String id = railwayDbRef.push().getKey();
-
+            //String id = railwayDbRef.push().getKey();
+            String id = railwayDbRef.child(userId).push().getKey();
             // Save key to SQLite
             if (id != null) {
                 keyDatabaseHelper.insertKey(id, key);
@@ -162,7 +155,8 @@ public class InsertingDataActivity extends AppCompatActivity {
             Railway railway = new Railway(id, e_bidAmt, e_aucId, e_bidId, e_enterprise, e_sstatus, e_dnumber, e_cdate, e_udate);
 
             assert id != null;
-            railwayDbRef.child(id).setValue(railway);
+            //railwayDbRef.child(id).setValue(railway);
+            railwayDbRef.child(userId).child(id).setValue(railway);
             Toast.makeText(InsertingDataActivity.this,"Data inserted!",Toast.LENGTH_SHORT).show();
 
 
