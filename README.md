@@ -15,3 +15,6 @@ Steps for setting up the app:
   a. Download the app zip folder.
   b. Run on an emulator/ download it in your phone.
 
+CHECK OUT THE "APP OVERVIEW" PDF FOR THE APP SCREENSHOTS.
+
+
